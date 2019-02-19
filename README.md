@@ -1,4 +1,10 @@
-#JsBridge
+# JsBridge
+
+-----
+
+## Statement
+
+This project forked from [https://github.com/lzyzsd/JsBridge](https://github.com/lzyzsd/JsBridge)，Thanks a lot!
 
 -----
 
@@ -9,6 +15,7 @@ This project make a bridge between Java and JavaScript.
 It provides safe and convenient way to call Java code from js and call js code from java.
 
 ## Demo
+
 ![JsBridge Demo](https://raw.githubusercontent.com/lzyzsd/JsBridge/master/JsBridge.gif)
 
 ## Usage
@@ -24,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.lzyzsd:jsbridge:1.0.4'
+    implementation 'com.github.lzyzsd:jsbridge:1.0.4'
 }
 ```
 
