@@ -1,10 +1,7 @@
 package com.github.lzyzsd.jsbridge;
 
 import android.graphics.Bitmap;
-
-import android.net.http.SslError;
 import android.os.Build;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -17,6 +14,7 @@ import java.net.URLDecoder;
  * Created by bruce on 10/28/15.
  */
 public class BridgeWebViewClient extends WebViewClient {
+
     private BridgeWebView webView;
 
     public BridgeWebViewClient(BridgeWebView webView) {
@@ -38,14 +36,15 @@ public class BridgeWebViewClient extends WebViewClient {
             webView.flushMessageQueue();
             return true;
         } else {
-            return this.onCustomShouldOverrideUrlLoading(url)?true:super.shouldOverrideUrlLoading(view, url);
+            return this.onCustomShouldOverrideUrlLoading(url) ? true : super.shouldOverrideUrlLoading(view, url);
         }
     }
 
-    // 增加shouldOverrideUrlLoading在api》=24时
+    /**
+     * 增加 shouldOverrideUrlLoading 在 api >=24 时
+     */
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             String url = request.getUrl().toString();
             try {
@@ -60,9 +59,10 @@ public class BridgeWebViewClient extends WebViewClient {
                 webView.flushMessageQueue();
                 return true;
             } else {
-                return this.onCustomShouldOverrideUrlLoading(url)?true:super.shouldOverrideUrlLoading(view, request);
+                return this.onCustomShouldOverrideUrlLoading(url) ? true : super.shouldOverrideUrlLoading(view, request);
             }
-        }else {
+
+        } else {
             return super.shouldOverrideUrlLoading(view, request);
         }
     }
@@ -75,12 +75,10 @@ public class BridgeWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-
         if (BridgeWebView.toLoadJs != null) {
             BridgeUtil.webViewLoadLocalJs(view, BridgeWebView.toLoadJs);
         }
 
-        //
         if (webView.getStartupMessage() != null) {
             for (Message m : webView.getStartupMessage()) {
                 webView.dispatchMessage(m);
@@ -88,22 +86,21 @@ public class BridgeWebViewClient extends WebViewClient {
             webView.setStartupMessage(null);
         }
 
-        //
-        onCustomPageFinishd(view,url);
-
+        onCustomPageFinished(view, url);
     }
 
-
+    /**
+     * 需要重写的方法（如果需要）
+     */
     protected boolean onCustomShouldOverrideUrlLoading(String url) {
         return false;
     }
 
-
-    protected void onCustomPageFinishd(WebView view, String url){
+    /**
+     * 需要重写的方法（如果需要）
+     */
+    protected void onCustomPageFinished(WebView view, String url) {
 
     }
-
-
-
 
 }

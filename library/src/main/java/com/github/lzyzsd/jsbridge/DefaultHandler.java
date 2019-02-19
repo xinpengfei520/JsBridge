@@ -1,14 +1,17 @@
 package com.github.lzyzsd.jsbridge;
 
-public class DefaultHandler implements BridgeHandler{
+import android.util.Log;
 
-	String TAG = "DefaultHandler";
-	
-	@Override
-	public void handler(String data, CallBackFunction function) {
-		if(function != null){
-			function.onCallBack("DefaultHandler response data");
-		}
-	}
+public class DefaultHandler implements BridgeHandler {
+
+    private static final String TAG = "DefaultHandler";
+
+    @Override
+    public void handler(String data, CallBackFunction function) {
+        Log.i(TAG, "DefaultHandler handler():data===" + data);
+        if (function != null) {
+            function.onCallBack("DefaultHandler response data");
+        }
+    }
 
 }
