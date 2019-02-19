@@ -1,4 +1,4 @@
-# JsBridge
+# JsBridge [![](https://jitpack.io/v/xinpengfei520/JsBridge.svg)](https://jitpack.io/#xinpengfei520/JsBridge)
 
 -----
 
@@ -31,8 +31,38 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.lzyzsd:jsbridge:1.0.4'
+    implementation 'com.github.xinpengfei520:JsBridge:<latest-version>'
 }
+```
+
+## 本项目针对原项目做了如下优化
+
+### 1.增加如下注册的重载方法
+
+```
+    /**
+     * 将整个 Map 集合注册到 messageHandlers
+     *
+     * @param handlerMap Map<String, BridgeHandler> type set.
+     */
+    public void registerHandler(Map<String, BridgeHandler> handlerMap) {
+        if (handlerMap != null && handlerMap.size() > 0) {
+            messageHandlers.putAll(handlerMap);
+        }
+    }
+```
+
+### 2.增加解注册所有 handler 的方法
+
+```
+    /**
+     * unregister all handler.
+     */
+    public void unregisterAllHandler() {
+        if (messageHandlers != null && !messageHandlers.isEmpty()) {
+            messageHandlers.clear();
+        }
+    }
 ```
 
 ## Use it in Java
