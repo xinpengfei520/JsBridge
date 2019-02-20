@@ -1,8 +1,8 @@
 package com.github.lzyzsd.jsbridge;
 
 import android.graphics.Bitmap;
-import android.os.Build;
-import android.webkit.WebResourceRequest;
+import android.net.http.SslError;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -10,11 +10,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 /**
- * 如果要自定义WebViewClient必须要集成此类
  * Created by bruce on 10/28/15.
  */
 public class BridgeWebViewClient extends WebViewClient {
-
     private BridgeWebView webView;
 
     public BridgeWebViewClient(BridgeWebView webView) {
@@ -36,34 +34,7 @@ public class BridgeWebViewClient extends WebViewClient {
             webView.flushMessageQueue();
             return true;
         } else {
-            return this.onCustomShouldOverrideUrlLoading(url) ? true : super.shouldOverrideUrlLoading(view, url);
-        }
-    }
-
-    /**
-     * 增加 shouldOverrideUrlLoading 在 api >=24 时
-     */
-    @Override
-    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            String url = request.getUrl().toString();
-            try {
-                url = URLDecoder.decode(url, "UTF-8");
-            } catch (UnsupportedEncodingException ex) {
-                ex.printStackTrace();
-            }
-            if (url.startsWith(BridgeUtil.YY_RETURN_DATA)) { // 如果是返回数据
-                webView.handlerReturnData(url);
-                return true;
-            } else if (url.startsWith(BridgeUtil.YY_OVERRIDE_SCHEMA)) { //
-                webView.flushMessageQueue();
-                return true;
-            } else {
-                return this.onCustomShouldOverrideUrlLoading(url) ? true : super.shouldOverrideUrlLoading(view, request);
-            }
-
-        } else {
-            return super.shouldOverrideUrlLoading(view, request);
+            return super.shouldOverrideUrlLoading(view, url);
         }
     }
 
@@ -75,6 +46,7 @@ public class BridgeWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
+
         if (BridgeWebView.toLoadJs != null) {
             BridgeUtil.webViewLoadLocalJs(view, BridgeWebView.toLoadJs);
         }
@@ -85,22 +57,19 @@ public class BridgeWebViewClient extends WebViewClient {
             }
             webView.setStartupMessage(null);
         }
+    }
 
-        onCustomPageFinished(view, url);
+    @Override
+    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+        super.onReceivedError(view, errorCode, description, failingUrl);
     }
 
     /**
-     * 需要重写的方法（如果需要）
+     * 处理 HTTPS 的请求
      */
-    protected boolean onCustomShouldOverrideUrlLoading(String url) {
-        return false;
+    @Override
+    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+        // 继续加载 https 链接
+        handler.proceed();
     }
-
-    /**
-     * 需要重写的方法（如果需要）
-     */
-    protected void onCustomPageFinished(WebView view, String url) {
-
-    }
-
 }
