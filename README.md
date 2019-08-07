@@ -71,8 +71,9 @@ add com.github.lzyzsd.jsbridge.BridgeWebView to your layout, it is inherited fro
 
 ### Register a Java handler function so that js can call
 
-```java
+java:
 
+```
     webView.registerHandler("submitFromWeb", new BridgeHandler() {
         @Override
         public void handler(String data, CallBackFunction function) {
@@ -85,8 +86,9 @@ add com.github.lzyzsd.jsbridge.BridgeWebView to your layout, it is inherited fro
 
 js can call this Java handler method "submitFromWeb" through:
 
-```javascript
+javascript:
 
+```
     WebViewJavascriptBridge.callHandler(
         'submitFromWeb'
         , {'param': str1}
@@ -94,32 +96,32 @@ js can call this Java handler method "submitFromWeb" through:
             document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
         }
     );
-
 ```
 
 You can set a default handler in Java, so that js can send message to Java without assigned handlerName
 
-```java
-
-    webView.setDefaultHandler(new DefaultHandler());
+java:
 
 ```
+    webView.setDefaultHandler(new DefaultHandler());
+```
 
-```javascript
+javascript:
 
+```
     window.WebViewJavascriptBridge.send(
         data
         , function(responseData) {
             document.getElementById("show").innerHTML = "repsonseData from java, data = " + responseData
         }
     );
-
 ```
 
 ### Register a JavaScript handler function so that Java can call
 
-```javascript
+javascript:
 
+```
     WebViewJavascriptBridge.registerHandler("functionInJs", function(data, responseCallback) {
         document.getElementById("show").innerHTML = ("data from Java: = " + data);
         var responseData = "Javascript Says Right back aka!";
@@ -130,22 +132,24 @@ You can set a default handler in Java, so that js can send message to Java witho
 
 Java can call this js handler function "functionInJs" through:
 
-```java
+java:
 
+```
     webView.callHandler("functionInJs", new Gson().toJson(user), new CallBackFunction() {
         @Override
         public void onCallBack(String data) {
 
         }
     });
-
 ```
+
 You can also define a default handler use init method, so that Java can send message to js without assigned handlerName
 
 for example:
 
-```javascript
+javascript:
 
+```
     bridge.init(function(message, responseCallback) {
         console.log('JS got a message', message);
         var data = {
@@ -154,10 +158,11 @@ for example:
         console.log('JS responding with', data);
         responseCallback(data);
     });
-
 ```
 
-```java
+java:
+
+```
     webView.send("hello");
 ```
 
@@ -169,8 +174,9 @@ This lib will inject a WebViewJavascriptBridge Object to window object.
 So in your js, before use WebViewJavascriptBridge, you must detect if WebViewJavascriptBridge exist.
 If WebViewJavascriptBridge does not exit, you can listen to WebViewJavascriptBridgeReady event, as the blow code shows:
 
-```javascript
+javascript:
 
+```
     if (window.WebViewJavascriptBridge) {
         //do your work here
     } else {
@@ -182,7 +188,6 @@ If WebViewJavascriptBridge does not exit, you can listen to WebViewJavascriptBri
             false
         );
     }
-
 ```
 
 ## License
