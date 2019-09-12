@@ -1,8 +1,15 @@
 package com.github.lzyzsd.jsbridge;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.webkit.GeolocationPermissions;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 
 import java.io.File;
 
@@ -14,6 +21,60 @@ import java.io.File;
 public class WebViewUtil {
 
     private static final String TAG = "WebViewUtil";
+    private static final int MAX_PROGRESS = 100;
+
+    /**
+     * initialize WebView settings
+     *
+     * @param webView     BridgeWebView
+     * @param progressbar ProgressBar
+     */
+    @SuppressLint("SetJavaScriptEnabled")
+    public static void initWebview(BridgeWebView webView, final ProgressBar progressbar) {
+        if (webView == null) return;
+        WebSettings webSettings = webView.getSettings();
+        String ua = webSettings.getUserAgentString();
+        // 设置用户 Agent 标识
+        webSettings.setUserAgentString(ua + " android_appName");
+        // 设置支持 JavaScript
+        webSettings.setJavaScriptEnabled(true);
+        // 是否阻塞加载网络图片
+        webSettings.setBlockNetworkImage(false);
+        // 设置文字编码方式
+        webSettings.setDefaultTextEncodingName("UTF-8");
+        // 开启 DOM storage API 功能
+        webSettings.setDomStorageEnabled(true);
+        //设置缓存模式
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        // 设置定位服务可用
+        webSettings.setGeolocationEnabled(true);
+        // 设置默认的 Handler
+        webView.setDefaultHandler(new DefaultHandler());
+        // 设置 WebChromeClient
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                progressbar.setProgress(newProgress);
+                if (newProgress == MAX_PROGRESS) {
+                    progressbar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                super.onGeolocationPermissionsShowPrompt(origin, callback);
+                callback.invoke(origin, true, true);
+            }
+
+            @Override
+            public void onGeolocationPermissionsHidePrompt() {
+                super.onGeolocationPermissionsHidePrompt();
+            }
+        });
+
+        webView.setWebViewClient(new BridgeWebViewClient(webView));
+    }
 
     /**
      * clear WebView cache and databases
