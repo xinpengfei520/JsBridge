@@ -48,6 +48,12 @@ public class WebViewUtil {
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         // 设置定位服务可用
         webSettings.setGeolocationEnabled(true);
+        // 禁止使用 File 域
+        webSettings.setAllowFileAccess(false);
+        // 显式移除有风险的 WebView 系统隐藏接口
+        webView.removeJavascriptInterface("searchBoxJavaBridge_");
+        webView.removeJavascriptInterface("accessibility");
+        webView.removeJavascriptInterface("accessibilityTraversal");
         // 设置默认的 Handler
         webView.setDefaultHandler(new DefaultHandler());
         // 设置 WebChromeClient
@@ -74,6 +80,17 @@ public class WebViewUtil {
         });
 
         webView.setWebViewClient(new BridgeWebViewClient(webView));
+    }
+
+    /**
+     * 设置 JavaScript 是否可用，当页面退出的时候最好禁用
+     *
+     * @param webView BridgeWebView
+     * @param enable  true:可用，false:不可用
+     */
+    public static void setJavaScriptEnable(BridgeWebView webView, boolean enable) {
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(enable);
     }
 
     /**
