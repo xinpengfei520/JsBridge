@@ -2,6 +2,7 @@ package com.github.lzyzsd.jsbridge;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +41,9 @@ public class WebViewUtil {
         webSettings.setJavaScriptEnabled(true);
         // 是否阻塞加载网络图片
         webSettings.setBlockNetworkImage(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
         // 设置文字编码方式
         webSettings.setDefaultTextEncodingName("UTF-8");
         // 开启 DOM storage API 功能
