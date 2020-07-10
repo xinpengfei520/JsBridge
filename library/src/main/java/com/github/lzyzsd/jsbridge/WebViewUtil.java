@@ -75,6 +75,14 @@ public class WebViewUtil {
                 if (newProgress == MAX_PROGRESS) {
                     progressbar.setVisibility(View.GONE);
                 }
+                if (mCallback != null) {
+                    mCallback.onProgressing(newProgress);
+                }
+                if (newProgress == 100) {
+                    if (mCallback != null) {
+                        mCallback.onPageFinished();
+                    }
+                }
             }
 
             @Override
@@ -89,7 +97,7 @@ public class WebViewUtil {
             }
         });
 
-        webView.setWebViewClient(new BridgeWebViewClient(webView));
+        webView.setWebViewClient(new BridgeWebViewClient(webView, callBack));
     }
 
     /**
