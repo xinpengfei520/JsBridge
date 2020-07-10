@@ -13,10 +13,17 @@ import java.net.URLDecoder;
  * Created by bruce on 10/28/15.
  */
 public class BridgeWebViewClient extends WebViewClient {
+
     private BridgeWebView webView;
+    private static WebViewClientCallBack mCallback;
 
     public BridgeWebViewClient(BridgeWebView webView) {
+        this(webView, null);
+    }
+
+    public BridgeWebViewClient(BridgeWebView webView, WebViewClientCallBack callBack) {
         this.webView = webView;
+        mCallback = callBack;
     }
 
     @Override
@@ -41,6 +48,9 @@ public class BridgeWebViewClient extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
+        if (mCallback != null) {
+            mCallback.onPageStarted();
+        }
     }
 
     @Override
@@ -62,6 +72,9 @@ public class BridgeWebViewClient extends WebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
+        if (mCallback != null) {
+            mCallback.onReceivedError(errorCode, description, failingUrl);
+        }
     }
 
     /**

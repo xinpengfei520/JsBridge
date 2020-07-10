@@ -23,6 +23,11 @@ public class WebViewUtil {
 
     private static final String TAG = "WebViewUtil";
     private static final int MAX_PROGRESS = 100;
+    private static WebViewClientCallBack mCallback;
+
+    public static void initWebview(BridgeWebView webView, final ProgressBar progressbar) {
+        initWebview(webView, progressbar, null);
+    }
 
     /**
      * initialize WebView settings
@@ -31,7 +36,8 @@ public class WebViewUtil {
      * @param progressbar ProgressBar
      */
     @SuppressLint("SetJavaScriptEnabled")
-    public static void initWebview(BridgeWebView webView, final ProgressBar progressbar) {
+    public static void initWebview(BridgeWebView webView, final ProgressBar progressbar, WebViewClientCallBack callBack) {
+        mCallback = callBack;
         if (webView == null) return;
         WebSettings webSettings = webView.getSettings();
         String ua = webSettings.getUserAgentString();
