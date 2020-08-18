@@ -22,4 +22,5 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation project(':library')
+    //implementation 'com.github.xinpengfei520:JsBridge:1.1.11'
 }
