@@ -3,6 +3,8 @@ package com.github.lzyzsd.jsbridge;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -82,7 +84,19 @@ public class BridgeWebViewClient extends WebViewClient {
      */
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        // 继续加载 https 链接
-        handler.proceed();
+        if (mCallback != null) {
+            mCallback.onReceivedSslError(view, handler, error);
+        } else {
+            // 继续加载 https 链接
+            handler.proceed();
+        }
+    }
+
+    @Override
+    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+        if (mCallback != null) {
+            return mCallback.shouldInterceptRequest(view, request);
+        }
+        return super.shouldInterceptRequest(view, request);
     }
 }
